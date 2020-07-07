@@ -29,6 +29,7 @@ NSString* const kCountlyMetricKeyDensity            = @"_density";
 NSString* const kCountlyMetricKeyLocale             = @"_locale";
 NSString* const kCountlyMetricKeyHasWatch           = @"_has_watch";
 NSString* const kCountlyMetricKeyInstalledWatchApp  = @"_installed_watch_app";
+NSString* const kCountlyMetricKeyDeviceConnection   = @"_device_conneciton";
 
 #if (TARGET_OS_IOS)
 @interface CountlyDeviceInfo ()
@@ -214,6 +215,26 @@ NSString* const kCountlyMetricKeyInstalledWatchApp  = @"_installed_watch_app";
     return [NSBundle.mainBundle objectForInfoDictionaryKey:(NSString*)kCFBundleVersionKey];
 }
 
++ (NSString *)connectionTypeString
+{
+    switch (CountlyDeviceInfo.connectionType) {
+        case 0:
+            return @"none";
+        case 1:
+            return @"wifi";
+        case 2:
+            return @"network";
+        case 3:
+            return @"2G";
+        case 4:
+            return @"3G";
+        case 5:
+            return @"4G";
+        default:
+            return @"unknown";
+    }
+}
+
 #if (TARGET_OS_IOS)
 + (NSInteger)hasWatch
 {
@@ -247,6 +268,8 @@ NSString* const kCountlyMetricKeyInstalledWatchApp  = @"_installed_watch_app";
     metricsDictionary[kCountlyMetricKeyResolution] = CountlyDeviceInfo.resolution;
     metricsDictionary[kCountlyMetricKeyDensity] = CountlyDeviceInfo.density;
     metricsDictionary[kCountlyMetricKeyLocale] = CountlyDeviceInfo.locale;
+    
+    metricsDictionary[kCountlyMetricKeyDeviceConnection] = CountlyDeviceInfo.connectionTypeString;
 
 #if (TARGET_OS_IOS)
     if (CountlyCommon.sharedInstance.enableAppleWatch)
